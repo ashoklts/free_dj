@@ -19,7 +19,7 @@ def gm_view(request):
     'postman-token': "08c93e01-afd3-b93e-bfc8-1a8b1b2ef57a"
     }
 
-    # conn.request("GET", "/api/option-chain-indices?symbol=NIFTY", headers=headers)
+    conn.request("GET", "/api/option-chain-indices?symbol=NIFTY", headers=headers)
 
     # res = conn.getresponse()
     # data = res.read()
