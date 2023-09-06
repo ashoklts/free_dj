@@ -19,5 +19,6 @@ from demoApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('gm_view', views.gm_view)
+    path('gm_view', views.gm_view),
+    path('req_view', views.req_view)
 ]
