@@ -54,9 +54,57 @@ def get_data(url):
 
 def gm_view(request):
 
-    response_text = get_data(url_bnf)
-    data = json.loads(response_text)
+    # response_text = get_data(url_bnf)
+    # data = json.loads(response_text)
+    
     # print(data)
+    
+    # Define the URL of the NSE India homepage
+    homepage_url = "https://www.nseindia.com/"
+
+    # Define custom headers
+    headers = {
+        "User-Agent": "Your User Agent String Here",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "en-US,en;q=0.5",
+        # Add any other headers if needed
+    }
+
+    # Send a GET request to the homepage to retrieve cookies
+    session = requests.Session()
+    session.headers.update(headers)
+    
+    
+    try:
+        homepage_response = session.get(homepage_url)
+        # Check if the request was successful
+        if homepage_response.status_code == 200:
+            # Now, the 'session' object contains the cookies from the homepage response.
+            
+            # Define the URL of the options chain page
+            options_chain_url = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY"
+            
+            # Send a GET request to the options chain page using the same session (which includes cookies)
+            options_chain_response = session.get(options_chain_url)
+            
+            # Check if the request for options chain data was successful
+            if options_chain_response.status_code == 200:
+                # The content of the options chain page can be found in options_chain_response.text
+                # You can now parse the HTML or use any other method to extract the data you need
+                options_chain_data = options_chain_response.text
+                # print(options_chain_data)
+                return JsonResponse({"chain" : options_chain_data})
+                # Now you can process the options chain data as needed
+            else:
+                print("Failed to retrieve options chain data. Status code:", options_chain_response.status_code)
+        else:
+            print("Failed to retrieve homepage. Status code:", homepage_response.status_code)
+    except requests.exceptions.RequestException as e:
+        print("An error occurred:", str(e))
+    
+    
+    
     
     # totp = pyotp.TOTP(secret)
     # tpin = totp.now() # => '492039'
@@ -162,7 +210,7 @@ def gm_view(request):
     # response = requests.request("GET", url, headers=headers)
 
     # print(response.text)
-    return JsonResponse({"chain" : data}) #json.loads(data.decode("utf-8")) 
+    return JsonResponse({"chain" : "test"}) #json.loads(data.decode("utf-8")) 
 
 
 
