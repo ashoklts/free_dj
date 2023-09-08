@@ -25,15 +25,15 @@ cookies = dict()
 
 
 
-# secret =  "GUYDMMRRGIYTQXZVKBDUWRKZ"  #pyotp.random_base32()
-# cred={
-#     "APP_NAME":"5P50621218",
-#     "APP_SOURCE":"15635",
-#     "USER_ID":"CZsJNvTY8Nn",
-#     "PASSWORD":"RtH02JIxjod",
-#     "USER_KEY":"5MEAGCtpGJIbxhcDinpMocDnvK230NUI",
-#     "ENCRYPTION_KEY":"VgMHQZrhfd7gR8Ul2TDn4ywvnB2LEH3j"
-#     }
+secret =  "GUYDMMRRGIYTQXZVKBDUWRKZ"  #pyotp.random_base32()
+cred={
+    "APP_NAME":"5P50621218",
+    "APP_SOURCE":"15635",
+    "USER_ID":"CZsJNvTY8Nn",
+    "PASSWORD":"RtH02JIxjod",
+    "USER_KEY":"5MEAGCtpGJIbxhcDinpMocDnvK230NUI",
+    "ENCRYPTION_KEY":"VgMHQZrhfd7gR8Ul2TDn4ywvnB2LEH3j"
+    }
 
 
 def set_cookie():
@@ -56,59 +56,10 @@ def gm_view(request):
 
     # response_text = get_data(url_bnf)
     # data = json.loads(response_text)
+    # print
     
-    # print(data)
-    
-    # Define the URL of the NSE India homepage
-    homepage_url = "https://www.nseindia.com/"
-
-    # Define custom headers
-    headers = {
-        "User-Agent": "Your User Agent String Here",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "en-US,en;q=0.5",
-        # Add any other headers if needed
-    }
-
-    # Send a GET request to the homepage to retrieve cookies
-    session = requests.Session()
-    session.headers.update(headers)
-    
-    
-    try:
-        homepage_response = session.get(homepage_url)
-        # Check if the request was successful
-        print(homepage_response)
-        if homepage_response.status_code == 200:
-            # Now, the 'session' object contains the cookies from the homepage response.
-            
-            # Define the URL of the options chain page
-            options_chain_url = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY"
-            
-            # Send a GET request to the options chain page using the same session (which includes cookies)
-            options_chain_response = session.get(options_chain_url)
-            
-            # Check if the request for options chain data was successful
-            if options_chain_response.status_code == 200:
-                # The content of the options chain page can be found in options_chain_response.text
-                # You can now parse the HTML or use any other method to extract the data you need
-                options_chain_data = options_chain_response.text
-                # print(options_chain_data)
-                return JsonResponse({"chain" : options_chain_data})
-                # Now you can process the options chain data as needed
-            else:
-                print("Failed to retrieve options chain data. Status code:", options_chain_response.status_code)
-        else:
-            print("Failed to retrieve homepage. Status code:", homepage_response.status_code)
-    except requests.exceptions.RequestException as e:
-        print("An error occurred:", str(e))
-        return JsonResponse({"chain" : str(e)})
-    
-    
-    
-    # totp = pyotp.TOTP(secret)
-    # tpin = totp.now() # => '492039'
+    totp = pyotp.TOTP(secret)
+    tpin = totp.now() # => '492039'
 
 
     
@@ -122,19 +73,19 @@ def gm_view(request):
     # print(client.access_token)
     
     
-    # client = FivePaisaClient(cred=cred)
-    # client.access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjUwNjIxMjE4Iiwicm9sZSI6IjE1NjM1IiwiU3RhdGUiOiIiLCJSZWRpcmVjdFNlcnZlciI6IkMiLCJuYmYiOjE2OTQxNTIxNTYsImV4cCI6MTY5NDE5Nzc5OSwiaWF0IjoxNjk0MTUyMTU2fQ.eOUSSJq-Y3VNl8SOgGglClBBkwuiTVDcu8Tg6Q-PqDE";
-    # # print(client.holdings())
-    # expires = client.get_expiry("N","BANKNIFTY")
-    # print(expires['Expiry'][0]["ExpiryDate"])
-    # s = expires['Expiry'][0]["ExpiryDate"]
-    # first = "("
-    # last = "+0530)"
-    # start = s.rindex( first ) + len( first )
-    # end = s.rindex( last, start )
-    # print(s[start:end])
+    client = FivePaisaClient(cred=cred)
+    client.access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjUwNjIxMjE4Iiwicm9sZSI6IjE1NjM1IiwiU3RhdGUiOiIiLCJSZWRpcmVjdFNlcnZlciI6IkMiLCJuYmYiOjE2OTQxNTIxNTYsImV4cCI6MTY5NDE5Nzc5OSwiaWF0IjoxNjk0MTUyMTU2fQ.eOUSSJq-Y3VNl8SOgGglClBBkwuiTVDcu8Tg6Q-PqDE";
+    # print(client.holdings())
+    expires = client.get_expiry("N","BANKNIFTY")
+    print(expires['Expiry'][0]["ExpiryDate"])
+    s = expires['Expiry'][0]["ExpiryDate"]
+    first = "("
+    last = "+0530)"
+    start = s.rindex( first ) + len( first )
+    end = s.rindex( last, start )
+    print(s[start:end])
 
-    # get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
+    get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
     
     # conn = http.client.HTTPSConnection("www.nseindia.com")
 
@@ -211,7 +162,7 @@ def gm_view(request):
     # response = requests.request("GET", url, headers=headers)
 
     # print(response.text)
-    return JsonResponse({"chain" : "test"}) #json.loads(data.decode("utf-8")) 
+    return JsonResponse({"chain" : get_op_chain}) #json.loads(data.decode("utf-8")) 
 
 
 
