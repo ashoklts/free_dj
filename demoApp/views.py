@@ -79,6 +79,7 @@ def gm_view(request):
     try:
         homepage_response = session.get(homepage_url)
         # Check if the request was successful
+        print(homepage_response)
         if homepage_response.status_code == 200:
             # Now, the 'session' object contains the cookies from the homepage response.
             
@@ -102,7 +103,7 @@ def gm_view(request):
             print("Failed to retrieve homepage. Status code:", homepage_response.status_code)
     except requests.exceptions.RequestException as e:
         print("An error occurred:", str(e))
-    
+        return JsonResponse({"chain" : str(e)})
     
     
     
