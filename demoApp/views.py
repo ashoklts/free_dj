@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
+import datetime
+from dateutil.tz import gettz
+dtobj = datetime.datetime.now(tz=gettz('Asia/Kolkata'))
 import requests
 import http.client
 import json
@@ -9,6 +12,7 @@ from py5paisa import FivePaisaClient
 import pyotp
 import time
 import math
+import os
 
 # ashoklts
 # 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
@@ -56,6 +60,21 @@ def get_data(url):
     return ""
 
 def gm_view(request):
+    expiry_object = {"option_chain" : {}}
+    current_date = dtobj.strftime("%Y-%m-%d")
+    # print(datetime.datetime.fromtimestamp(1694595600000 / 1000).strftime("%Y-%m-%d"))
+    # return JsonResponse({"chain" : "test"})
+    # filepath = "static/admin/option_chain/myfile2.json"
+    # if os.path.isfile('path/to/file'):
+    #     file1 = open(filepath, "w")
+    # else:
+    #     file1 = open(filepath, "a")
+    # file1.writelines("\n")
+    # L = ["This is Delhi"]
+    # file1.writelines(L)
+    # file1.writelines("#")
+    # file1.close()
+    # return JsonResponse({"chain" : "test"})
 
     # response_text = get_data(url_bnf)
     # data = json.loads(response_text)
@@ -80,16 +99,35 @@ def gm_view(request):
     client.access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjUwNjIxMjE4Iiwicm9sZSI6IjE1NjM1IiwiU3RhdGUiOiIiLCJSZWRpcmVjdFNlcnZlciI6IkMiLCJuYmYiOjE2OTQxNTIxNTYsImV4cCI6MTY5NDE5Nzc5OSwiaWF0IjoxNjk0MTUyMTU2fQ.eOUSSJq-Y3VNl8SOgGglClBBkwuiTVDcu8Tg6Q-PqDE";
     # print(client.holdings())
     expires = client.get_expiry("N","BANKNIFTY")
-    print(expires['Expiry'][0]["ExpiryDate"])
-    s = expires['Expiry'][0]["ExpiryDate"]
-    first = "("
-    last = "+0530)"
-    start = s.rindex( first ) + len( first )
-    end = s.rindex( last, start )
-    print(s[start:end])
-    
+    # print(expires)
+    expiry_object["option_date"] = dtobj.strftime("%Y-%m-%d %H:%M")
+    # expiry_object["option_date"] = datetime.now().strftime("%H:%M")
+    for index in expires["Expiry"]:
+        # print(index["ExpiryDate"])
+        s = index["ExpiryDate"]
+        first = "("
+        last = "+0530)"
+        start = s.rindex( first ) + len( first )
+        end = s.rindex( last, start )
+        print(s[start:end])
+        expiry = datetime.datetime.fromtimestamp(int(int(s[start:end]) / 1000)).strftime("%Y-%m-%d")
+        get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
+        expiry_object[expiry] = {}
+        expiry_object[expiry]["option_chain"] = get_op_chain
+    print(expiry_object)
+    filepath = "static/admin/option_chain/"+current_date+".json"
+    if os.path.isfile('path/to/file'):
+        file1 = open(filepath, "w")
+    else:
+        file1 = open(filepath, "a")
 
-    get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
+    file1.writelines("\n")
+    file1.writelines(json.dumps(expiry_object))
+    file1.writelines("#")
+    file1.close()
+    return JsonResponse({"chain" : "test"})
+    # print(expires['Expiry'][0]["ExpiryDate"])
+   
     
     # conn = http.client.HTTPSConnection("www.nseindia.com")
 
