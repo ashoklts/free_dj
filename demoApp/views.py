@@ -50,7 +50,7 @@ def gm_view(request):
     end = s.rindex( last, start )
     print(s[start:end])
 
-    print(client.get_option_chain("N","BANKNIFTY",int(s[start:end])))
+    get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
     
     #  conn = http.client.HTTPSConnection("www.nseindia.com")
 
@@ -127,7 +127,7 @@ def gm_view(request):
     # response = requests.request("GET", url, headers=headers)
 
     # print(response.text)
-    return JsonResponse({"chain" : client.access_token}) #json.loads(data.decode("utf-8")) 
+    return JsonResponse({"chain" : get_op_chain}) #json.loads(data.decode("utf-8")) 
 
 
 def req_view(request):
