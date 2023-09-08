@@ -10,6 +10,9 @@ import pyotp
 import time
 import math
 
+# ashoklts
+# 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
+
 url_oc      = "https://www.nseindia.com/option-chain"
 url_bnf     = 'https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY'
 url_nf      = 'https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY'
@@ -84,6 +87,7 @@ def gm_view(request):
     start = s.rindex( first ) + len( first )
     end = s.rindex( last, start )
     print(s[start:end])
+    
 
     get_op_chain = client.get_option_chain("N","BANKNIFTY",int(s[start:end]))
     
