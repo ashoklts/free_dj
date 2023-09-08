@@ -23,19 +23,34 @@ def gm_view(request):
     
     
     
-    totp = pyotp.TOTP(secret)
-    tpin = totp.now() # => '492039'
+    # totp = pyotp.TOTP(secret)
+    # tpin = totp.now() # => '492039'
 
 
+    
+    
+    # client = FivePaisaClient(cred=cred)
+
+    # # New TOTP based authentication
+    # client.get_totp_session('50621218',tpin,'021092')
+    # client.get_access_token(client.request_token)
+
+    # print(client.access_token)
     
     
     client = FivePaisaClient(cred=cred)
+    client.access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjUwNjIxMjE4Iiwicm9sZSI6IjE1NjM1IiwiU3RhdGUiOiIiLCJSZWRpcmVjdFNlcnZlciI6IkMiLCJuYmYiOjE2OTQxNTIxNTYsImV4cCI6MTY5NDE5Nzc5OSwiaWF0IjoxNjk0MTUyMTU2fQ.eOUSSJq-Y3VNl8SOgGglClBBkwuiTVDcu8Tg6Q-PqDE";
+    # print(client.holdings())
+    expires = client.get_expiry("N","BANKNIFTY")
+    print(expires['Expiry'][0]["ExpiryDate"])
+    s = expires['Expiry'][0]["ExpiryDate"]
+    first = "("
+    last = "+0530)"
+    start = s.rindex( first ) + len( first )
+    end = s.rindex( last, start )
+    print(s[start:end])
 
-    # New TOTP based authentication
-    client.get_totp_session('50621218',tpin,'021092')
-    client.get_access_token(client.request_token)
-
-    print(client.access_token)
+    print(client.get_option_chain("N","BANKNIFTY",int(s[start:end])))
     
     #  conn = http.client.HTTPSConnection("www.nseindia.com")
 
